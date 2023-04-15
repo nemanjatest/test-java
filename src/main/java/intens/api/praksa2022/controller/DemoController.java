@@ -10,5 +10,6 @@ public class DemoController {
     public ResponseEntity<String> getRootDemo() {
 
         return ResponseEntity.ok().body("Intens Praksa 2023! Nemanja Cvejic023");
+        return ResponseEntity.ok().body("Intens Praksa 2023! Nemanja Cvejic023");
     }
 }

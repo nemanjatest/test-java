@@ -5,7 +5,7 @@ on:
     branches:
       - main
 jobs:
-  build-and-delpoy: 
+  build-and-deploy: 
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
         docker build -t $REPO .
         docker tag $REPO:latest ${{secrets.DOCKER_USERNAME}}/$REPO:latest
         docker push ${{secrets.DOCKER_USERNAME}}/$REPO
-    - name: Docker pull to AWS EC2 and run from DockerHub
+    - name: DockerHub pull to AWS EC2
       uses: appleboy/ssh-action@master
       with:
         host: ec2-174-129-114-30.compute-1.amazonaws.com
@@ -39,7 +39,7 @@ jobs:
         envs: GitHub-EC2
         script: |
           docker login
-          docker pull ${{secrets.DOCKER_USER}}/$REPO
-          docker stop ${{secrets.DOCKER_USER}}/$REPO
-          docker rm ${{secrets.DOCKER_USER}}/$REPO
-          docker run -p 8080:8080 ${{secrets.DOCKER_USER}}/$REPO
+          docker pull ${{secrets.DOCKER_USERNAME}}/$REPO
+          docker stop ${{secrets.DOCKER_USERNAME}}/$REPO
+          docker rm ${{secrets.DOCKER_USERNAME}}/$REPO
+          docker run -p 8080:8080 ${{secrets.DOCKER_USERNAME}}/$REPO

@@ -27,7 +27,7 @@ jobs:
       env:
         REPO: test-java
       run: |
-        docker build -t $REPO
+        docker build -t $REPO .
         docker tag $REPO:latest ${{secrets.DOCKER_USERNAME}}/$REPO:latest
         docker push ${{secrets.DOCKER_USERNAME}}/$REPO
     - name: Docker pull to AWS EC2 and run from DockerHub

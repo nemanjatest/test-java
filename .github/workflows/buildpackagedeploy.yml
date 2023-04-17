@@ -19,21 +19,18 @@ jobs:
       run: mvn clean package
     - name: Docker login
       env: 
-        DOCKER_USER: ${{secrets.DOCKER_USER}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run:
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        docker login -u cvl023 -p $DOCKER_PASSWORD
     - name: Docker push to DockerHub
       env:
         REPO: test-java
       run: |
-        docker build -t $REPO .
-        docker tag $REPO:latest ${{secrets.DOCKER_USER}}/$REPO:latest
-        docker push ${{secrets.DOCKER_USER}}/$REPO
+        docker build -t test-java .
+        docker tag test-java:latest cvl023/test-java:latest
+        docker push cvl023/test-java
     - name: DockerHub pull to AWS EC2
       env: 
-        REPO: test-java
-        DOCKER_USER: ${{secrets.DOCKER_USER}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       uses: appleboy/ssh-action@master
       with:
@@ -42,7 +39,7 @@ jobs:
         key: ${{secrets.AWS_SECRET_KEY}}
         envs: GitHub-EC2 
         script: |
-          sudo service docker.service restart
-          docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}
-          docker pull ${{secrets.DOCKER_USER}}/$REPO:latest
-          docker run -p 80:8080 ${{secrets.DOCKER_USER}}/$REPO
+          sudo systemctl restart docker
+          docker login -u cvl023 -p ${{secrets.DOCKER_PASSWORD}}
+          docker pull cvl023/test-java:latest
+          docker run -p 8080:8080 cvl023/test-java

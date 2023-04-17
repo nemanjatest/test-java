@@ -19,7 +19,7 @@ jobs:
       run: mvn clean package
     - name: Docker login
       env: 
-        DOCKER_USER: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run:
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
@@ -28,8 +28,8 @@ jobs:
         REPO: test-java
       run: |
         docker build -t $REPO .
-        docker tag $REPO:latest ${{secrets.DOCKER_USERNAME}}/$REPO:latest
-        docker push ${{secrets.DOCKER_USERNAME}}/$REPO
+        docker tag $REPO:latest ${{secrets.DOCKER_USER}}/$REPO:latest
+        docker push ${{secrets.DOCKER_USER}}/$REPO
     - name: DockerHub pull to AWS EC2
       uses: appleboy/ssh-action@master
       with:
@@ -39,7 +39,5 @@ jobs:
         envs: GitHub-EC2
         script: |
           docker login
-          docker pull ${{secrets.DOCKER_USERNAME}}/$REPO
-          docker stop ${{secrets.DOCKER_USERNAME}}/$REPO
-          docker rm ${{secrets.DOCKER_USERNAME}}/$REPO
-          docker run -p 8080:8080 ${{secrets.DOCKER_USERNAME}}/$REPO
+          docker pull ${{secrets.DOCKER_USER}}/$REPO:latest
+          docker run -p 8080:8080 ${{secrets.DOCKER_USER}}/$REPO:latest

@@ -31,6 +31,9 @@ jobs:
         docker tag $REPO:latest ${{secrets.DOCKER_USER}}/$REPO:latest
         docker push ${{secrets.DOCKER_USER}}/$REPO
     - name: DockerHub pull to AWS EC2
+      env: 
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       uses: appleboy/ssh-action@master
       with:
         host: ec2-174-129-114-30.compute-1.amazonaws.com
@@ -38,6 +41,6 @@ jobs:
         key: ${{secrets.AWS_SECRET_KEY}}
         envs: GitHub-EC2
         script: |
-          docker login
+          docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}
           docker pull ${{secrets.DOCKER_USER}}/$REPO:latest
           docker run -p 8080:8080 ${{secrets.DOCKER_USER}}/$REPO:latest

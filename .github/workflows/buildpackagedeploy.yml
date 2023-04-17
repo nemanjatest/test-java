@@ -1,4 +1,4 @@
-name: Build, package and deploy Docker image
+name: Build, package, deploy and run on AWS EC2 
 
 on:
   push:
@@ -41,7 +41,6 @@ jobs:
         key: ${{secrets.AWS_SECRET_KEY}}
         envs: GitHub-EC2
         script: |
-          sudo chmod 666 /var/run/docker.sock
           docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}
-          docker pull ${{secrets.DOCKER_USER}}/$REPO:latest
-          docker run -p 8080:8080 ${{secrets.DOCKER_USER}}/$REPO:latest
+          docker pull ${{secrets.DOCKER_USER}}/$REPO
+          docker run -p 8080:8080 ${{secrets.DOCKER_USER}}/$REPO

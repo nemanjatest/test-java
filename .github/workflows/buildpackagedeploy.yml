@@ -1,0 +1,45 @@
+name: Build, package and update Docker image
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-delpoy: 
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Java environment
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build and package with Maven
+      run: mvn clean package
+    - name: Docker login
+      env: 
+        DOCKER_USER: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run:
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: Docker push to DockerHub
+      env:
+        REPO: test-java
+      run: |
+        docker build -t $REPO
+        docker tag $REPO:latest ${{secrets.DOCKER_USERNAME}}/$REPO:latest
+        docker push ${{secrets.DOCKER_USERNAME}}/$REPO
+    - name: Docker pull to AWS EC2 and run from DockerHub
+      uses: appleboy/ssh-action@master
+      with:
+        host: ec2-174-129-114-30.compute-1.amazonaws.com
+        username: ec2-user
+        key: ${{secrets.AWS_SECRET_KEY}}
+        envs: GitHub-EC2
+        script: |
+          docker login
+          docker pull ${{secrets.DOCKER_USER}}/$REPO
+          docker stop ${{secrets.DOCKER_USER}}/$REPO
+          docker rm ${{secrets.DOCKER_USER}}/$REPO
+          docker run -p 8080:8080 ${{secrets.DOCKER_USER}}/$REPO

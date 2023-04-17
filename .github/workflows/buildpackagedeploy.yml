@@ -3,7 +3,7 @@ name: Build, package and deploy Docker image
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   build-and-delpoy: 
     runs-on: ubuntu-latest

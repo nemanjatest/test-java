@@ -41,8 +41,9 @@ jobs:
         username: ec2-user
         key: ${{secrets.AWS_SECRET_KEY}}
         envs: GitHub-EC2
-        script: |
+        run: 
           sudo systemctl restart docker  
+        script: |
           docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}
           docker pull ${{secrets.DOCKER_USER}}/$REPO:latest
-          docker run -p 8080:8080 cvl023/test-java:latest
+          docker run -p 8080:8080 cvl023/test-java

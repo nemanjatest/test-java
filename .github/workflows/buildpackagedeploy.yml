@@ -44,5 +44,5 @@ jobs:
         script: |
           sudo systemctl restart docker  
           docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}
-          docker pull ${{secrets.DOCKER_USER}}/$REPO
-          docker run -p 8080:80 cvl023/test-java
+          docker pull ${{secrets.DOCKER_USER}}/$REPO:latest
+          docker run -p 8080:8080 ${{secrets.DOCKER_USER}}/$REPO:latest

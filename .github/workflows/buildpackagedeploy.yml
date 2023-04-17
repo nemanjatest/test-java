@@ -40,5 +40,7 @@ jobs:
         envs: GitHub-EC2 
         script: |
           docker login -u cvl023 -p ${{secrets.DOCKER_PASSWORD}}
+          docker stop $(docker ps -a -q)
+          docker rm $(docker ps -a -q)   
           docker pull cvl023/test-java:latest
           docker run -p 8080:8080 cvl023/test-java

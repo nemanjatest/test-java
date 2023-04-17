@@ -32,6 +32,7 @@ jobs:
         docker push ${{secrets.DOCKER_USER}}/$REPO
     - name: DockerHub pull to AWS EC2
       env: 
+        REPO: test-java
         DOCKER_USER: ${{secrets.DOCKER_USER}}
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       uses: appleboy/ssh-action@master
@@ -42,6 +43,7 @@ jobs:
         envs: GitHub-EC2
         script: |
           docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}
-          docker pull ${{secrets.DOCKER_USER}}/$REPO
           docker stop ${{secrets.DOCKER_USER}}/$REPO
-          docker run --detach -p 8080:8080 cvl023/test-java
+          docker rm ${{secrets.DOCKER_USER}}/$REPO
+          docker pull ${{secrets.DOCKER_USER}}/$REPO
+          docker run -p 8080:80 cvl023/test-java

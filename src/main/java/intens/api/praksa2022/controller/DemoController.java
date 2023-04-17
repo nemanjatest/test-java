@@ -10,5 +10,5 @@ public class DemoController {
     public ResponseEntity<String> getRootDemo() {
 
         return ResponseEntity.ok().body("Intens Praksa 2022!");
-    }
+       }
 }

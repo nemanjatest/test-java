@@ -45,4 +45,4 @@ jobs:
           sudo service docker.service restart
           docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}
           docker pull ${{secrets.DOCKER_USER}}/$REPO:latest
-          docker run -p 8080:8080 ${{secrets.DOCKER_USER}}/$REPO
+          docker run -p 80:8080 ${{secrets.DOCKER_USER}}/$REPO

@@ -29,7 +29,7 @@ jobs:
         docker build -t test-java .
         docker tag test-java:latest cvl023/test-java:latest
         docker push cvl023/test-java
-    - name: DockerHub pull to AWS EC2
+    - name: DockerHub pull and run on AWS EC2
       env: 
         DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       uses: appleboy/ssh-action@master

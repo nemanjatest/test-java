@@ -39,7 +39,7 @@ jobs:
         key: ${{secrets.AWS_SECRET_KEY}}
         command_timeout: 20s
         envs: GitHub-EC2
-        script: |
+        run: |
           docker login -u cvl023 -p ${{secrets.DOCKER_PASSWORD}}
           docker stop $(docker ps -a -q)
           docker rm $(docker ps -a -q)   

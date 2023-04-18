@@ -40,7 +40,7 @@ jobs:
         command_timeout: 20s
         envs: GitHub-EC2
         script: |
-          docker login -u cvl023 -p ${{secrets.DOCKER_PASSWORD}}
+          docker login
           docker stop $(docker ps -a -q)
           docker rm $(docker ps -a -q)   
           docker pull cvl023/test-java:latest

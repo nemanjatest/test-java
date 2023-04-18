@@ -29,7 +29,7 @@ jobs:
         docker build -t test-java .
         docker tag test-java:latest cvl023/test-java:latest
         docker push cvl023/test-java
-    - name: Connect to EC2
+    - name: Connect to EC2, pull from DockerHub, and run
       uses: appleboy/ssh-action@master
       with:
         host: ec2-174-129-114-30.compute-1.amazonaws.com

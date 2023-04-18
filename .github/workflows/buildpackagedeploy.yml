@@ -37,10 +37,9 @@ jobs:
         key: ${{secrets.AWS_SECRET_KEY}}
         command_timeout: 20s
         envs: GitHub-EC2
-    - name: DockerHub pull and run on AWS EC2
-      run: |
-        docker login
-        docker pull cvl023/test-java:latest
-        docker stop $(docker ps -a -q)
-        docker rm $(docker ps -a -q)   
-        docker run -p 8080:8080 cvl023/test-java
+        script: |
+          docker login
+          docker pull cvl023/test-java:latest
+          docker stop $(docker ps -a -q)
+          docker rm $(docker ps -a -q)   
+          docker run -p 8080:8080 cvl023/test-java

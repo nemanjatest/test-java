@@ -25,11 +25,13 @@ jobs:
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
     - name: Docker push to DockerHub
       env:
-        REPO: test-java
+        DOCKER_REPO: ${{secrets.DOCKER_REPO}}
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       run: |
-        docker build -t $REPO .
-        docker tag $REPO:latest $DOCKER_USERNAME/$REPO:latest
-        docker push $DOCKER_USERNAME/$REPO
+        docker build -t $DOCKER_REPO .
+        docker tag $DOCKER_REPO:latest $DOCKER_USERNAME/$DOCKER_REPO:latest
+        docker push $DOCKER_USERNAME/$DOCKER_REPO
     - name: Connect to EC2, pull from DockerHub, and run
       uses: appleboy/ssh-action@master
       with:
@@ -40,7 +42,7 @@ jobs:
         envs: GitHub-EC2
         script: |
           docker login
-          docker pull $DOCKER_USERNAME/$REPO:latest
+          docker pull $DOCKER_USERNAME/$DOCKER_REPO:latest
           docker stop $(docker ps -a -q)
           docker rm $(docker ps -a -q)   
-          docker run -p 8080:8080 $DOCKER_USERNAME/$REPO
+          docker run -p 8080:8080 $DOCKER_USERNAME/$DOCKER_REPO

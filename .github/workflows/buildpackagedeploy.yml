@@ -33,6 +33,10 @@ jobs:
         docker tag $DOCKER_REPO:latest $DOCKER_USERNAME/$DOCKER_REPO:latest
         docker push $DOCKER_USERNAME/$DOCKER_REPO
     - name: Connect to EC2, pull from DockerHub, and run
+      env:
+        DOCKER_REPO: ${{secrets.DOCKER_REPO}}
+        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
       uses: appleboy/ssh-action@master
       with:
         host: ec2-44-203-75-157.compute-1.amazonaws.com
@@ -41,7 +45,7 @@ jobs:
         command_timeout: 20s
         envs: GitHub-EC2
         script: |
-          docker login
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker pull $DOCKER_USERNAME/$DOCKER_REPO:latest
           docker stop $(docker ps -a -q)
           docker rm $(docker ps -a -q)   
